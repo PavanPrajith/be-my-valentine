@@ -84,7 +84,7 @@
       color: white;
       opacity: 0.7;
       animation: pulse 2s infinite;
-      z-index: 5;
+      z-index: 6;
     }
 
     @keyframes pulse {
@@ -127,26 +127,28 @@
       }
     }
 
-    /* 💌 lyric */
-    .lyric {
-      margin-top: 18px;
-      font-size: 0.9rem;
-      font-style: italic;
-      color: #ff6f91;
-      line-height: 1.4;
+    /* 👆 invisible tap layer */
+    #tapLayer {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      background: transparent;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- 🎵 BACKGROUND MUSIC (iOS SAFE) -->
+  <!-- 🎵 BACKGROUND MUSIC -->
   <audio id="bgMusic" loop playsinline>
     <source src="background.mp3" type="audio/mpeg">
   </audio>
 
+  <!-- 👆 invisible tap layer -->
+  <div id="tapLayer"></div>
+
   <!-- 🎶 hint -->
-  <div id="musicHint">🎶 tap yes for music</div>
+  <div id="musicHint">🎶 tap anywhere</div>
 
   <!-- 💖 QUESTION CARD -->
   <div class="card" id="card">
@@ -164,16 +166,12 @@
     <h1>YAYYY 😭💘</h1>
 
     <p id="finalMessage"></p>
-
-    <p class="lyric">
-      “The angels up in the clouds are jealous knowin' we found<br>
-      somethin' so out of the ordinary”
-    </p>
   </div>
 
   <script>
     const bgMusic = document.getElementById("bgMusic");
     const musicHint = document.getElementById("musicHint");
+    const tapLayer = document.getElementById("tapLayer");
     const noBtn = document.getElementById("noBtn");
     const yesBtn = document.getElementById("yesBtn");
     const card = document.getElementById("card");
@@ -190,8 +188,8 @@
       always, in every moment, and in every version of us 💕
     `;
 
-    /* 🎶 START MUSIC ON YES (MOBILE SAFE) */
-    yesBtn.addEventListener("click", () => {
+    /* 🎶 START MUSIC ON FIRST TAP (MOBILE SAFE) */
+    tapLayer.addEventListener("click", () => {
       musicHint.style.display = "none";
 
       bgMusic.currentTime = 0;
@@ -208,6 +206,11 @@
         }
       }, 100);
 
+      tapLayer.remove();
+    });
+
+    /* 💕 YES BUTTON */
+    yesBtn.addEventListener("click", () => {
       card.classList.add("hidden");
       loveMessage.classList.remove("hidden");
     });
