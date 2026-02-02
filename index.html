@@ -44,14 +44,21 @@
     p {
       color: #555;
       font-size: 1rem;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       line-height: 1.4;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      position: relative;
+      margin-top: 10px;
     }
 
     button {
       font-size: 1rem;
       padding: 12px 24px;
-      margin: 8px;
       border: none;
       border-radius: 14px;
       cursor: pointer;
@@ -61,20 +68,43 @@
     #yesBtn {
       background: #ff4d6d;
       color: white;
-      box-shadow: 0 0 18px rgba(255, 77, 109, 0.55);
+      box-shadow: 0 0 var(--glow, 12px) rgba(255,77,109,0.7);
+      transform: scale(var(--scale, 1));
+    }
+
+    #yesBtn.pulse {
+      animation: pulseYes 1.2s infinite;
+    }
+
+    @keyframes pulseYes {
+      0% { transform: scale(var(--scale, 1)); }
+      50% { transform: scale(calc(var(--scale, 1) + 0.08)); }
+      100% { transform: scale(var(--scale, 1)); }
     }
 
     #noBtn {
       background: #adb5bd;
       color: white;
-      position: absolute;
+      position: relative;
+    }
+
+    #waitText {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: #ff6f91;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    #waitText.show {
+      opacity: 1;
     }
 
     .hidden {
       display: none;
     }
 
-    /* 🎶 music hint */
+    /* 🎶 hint */
     #musicHint {
       position: fixed;
       bottom: 14px;
@@ -93,7 +123,7 @@
       100% { opacity: 0.35; }
     }
 
-    /* 💬 chat bubbles */
+    /* 💬 bubbles */
     .bubble {
       position: absolute;
       background: white;
@@ -111,7 +141,7 @@
       100% { opacity: 0; transform: translateY(-30px); }
     }
 
-    /* 💓 floating hearts */
+    /* 💓 hearts */
     .heart {
       position: absolute;
       bottom: -20px;
@@ -127,95 +157,97 @@
       }
     }
 
-    /* 👆 invisible tap layer */
+    /* 👆 tap layer */
     #tapLayer {
       position: fixed;
       inset: 0;
       z-index: 10;
       background: transparent;
     }
+
+    /* 💌 lyric */
+    .lyric {
+      margin-top: 18px;
+      font-size: 0.9rem;
+      font-style: italic;
+      color: #ff6f91;
+    }
   </style>
 </head>
 
 <body>
 
-  <!-- 🎵 BACKGROUND MUSIC -->
   <audio id="bgMusic" loop playsinline>
     <source src="background.mp3" type="audio/mpeg">
   </audio>
 
-  <!-- 👆 invisible tap layer -->
   <div id="tapLayer"></div>
-
-  <!-- 🎶 hint -->
   <div id="musicHint">🎶 tap anywhere</div>
 
-  <!-- 💖 QUESTION CARD -->
   <div class="card" id="card">
     <h1>
       Will you be my<br>
       Valentine, Bubuuuuu? 💖
     </h1>
+
     <p>I promise love, laughs, and unlimited snacks 🥰</p>
-    <button id="yesBtn">Yes 💕</button>
-    <button id="noBtn">No 🙄</button>
+
+    <div class="button-row">
+      <button id="yesBtn">Yes 💕</button>
+      <button id="noBtn">No 🙄</button>
+    </div>
+
+    <div id="waitText">it’s okay… I’ll wait 🥺</div>
   </div>
 
-  <!-- 💘 FINAL MESSAGE -->
   <div class="card hidden" id="loveMessage">
     <h1>YAYYY 😭💘</h1>
 
     <p id="finalMessage"></p>
+
+    <p class="lyric">
+      “The angels up in the clouds are jealous knowin' we found<br>
+      somethin' so out of the ordinary”
+    </p>
   </div>
 
   <script>
     const bgMusic = document.getElementById("bgMusic");
-    const musicHint = document.getElementById("musicHint");
     const tapLayer = document.getElementById("tapLayer");
-    const noBtn = document.getElementById("noBtn");
+    const musicHint = document.getElementById("musicHint");
     const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
     const card = document.getElementById("card");
     const loveMessage = document.getElementById("loveMessage");
     const finalMessage = document.getElementById("finalMessage");
+    const waitText = document.getElementById("waitText");
+
+    let glow = 12;
+    let scale = 1;
+    let attempts = 0;
 
     finalMessage.innerHTML = `
       Bubuuuuu, I love you so, so, so much ❤️<br><br>
-
-      You make me the happiest man in the world, and I’m endlessly grateful to have you as my girlfriend.  
-      Every day with you feels like a gift, and my heart is at peace just knowing you’re mine.<br><br>
-
-      I promise you a lifetime filled with love, care, happiness, and the warmest cuddles —  
-      always, in every moment, and in every version of us 💕
+      You make me the happiest man in the world, and I’m endlessly grateful to have you as my girlfriend.<br><br>
+      I promise you a lifetime filled with love, care, happiness, and the warmest cuddles 💕
     `;
 
-    /* 🎶 START MUSIC ON FIRST TAP (MOBILE SAFE) */
     tapLayer.addEventListener("click", () => {
       musicHint.style.display = "none";
-
-      bgMusic.currentTime = 0;
       bgMusic.volume = 0;
       bgMusic.play();
 
-      let vol = 0;
+      let v = 0;
       const fade = setInterval(() => {
-        if (vol < 0.5) {
-          vol += 0.02;
-          bgMusic.volume = vol;
-        } else {
-          clearInterval(fade);
-        }
+        if (v < 0.5) {
+          v += 0.02;
+          bgMusic.volume = v;
+        } else clearInterval(fade);
       }, 100);
 
       tapLayer.remove();
     });
 
-    /* 💕 YES BUTTON */
-    yesBtn.addEventListener("click", () => {
-      card.classList.add("hidden");
-      loveMessage.classList.remove("hidden");
-    });
-
-    /* 😈 No button chaos */
     const bubbleMessages = [
       "are you sure?? 👀",
       "think carefully 😏",
@@ -224,9 +256,21 @@
       "you KNOW you want to 💕"
     ];
 
-    noBtn.addEventListener("mouseover", () => {
+    function teaseNo() {
       noBtn.style.left = Math.random() * (window.innerWidth - 80) + "px";
       noBtn.style.top = Math.random() * (window.innerHeight - 50) + "px";
+
+      glow += 6;
+      scale += 0.04;
+      attempts++;
+
+      yesBtn.style.setProperty("--glow", glow + "px");
+      yesBtn.style.setProperty("--scale", scale);
+
+      if (attempts >= 3) {
+        yesBtn.classList.add("pulse");
+        waitText.classList.add("show");
+      }
 
       const bubble = document.createElement("div");
       bubble.className = "bubble";
@@ -236,9 +280,16 @@
       document.body.appendChild(bubble);
 
       setTimeout(() => bubble.remove(), 2500);
+    }
+
+    noBtn.addEventListener("mouseover", teaseNo);
+    noBtn.addEventListener("touchstart", teaseNo);
+
+    yesBtn.addEventListener("click", () => {
+      card.classList.add("hidden");
+      loveMessage.classList.remove("hidden");
     });
 
-    /* 💓 floating hearts */
     function createHeart() {
       const heart = document.createElement("div");
       heart.className = "heart";
