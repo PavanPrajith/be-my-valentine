@@ -18,6 +18,7 @@
     }
 
     .card {
+      position: relative; /* IMPORTANT */
       background: white;
       padding: 32px 28px;
       border-radius: 28px;
@@ -52,8 +53,8 @@
       display: flex;
       justify-content: center;
       gap: 14px;
-      position: relative;
       margin-top: 10px;
+      position: relative;
     }
 
     button {
@@ -62,7 +63,7 @@
       border: none;
       border-radius: 14px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.25s ease;
     }
 
     #yesBtn {
@@ -85,7 +86,8 @@
     #noBtn {
       background: #adb5bd;
       color: white;
-      position: relative;
+      position: absolute;
+      transition: left 0.15s ease, top 0.15s ease;
     }
 
     #waitText {
@@ -104,7 +106,7 @@
       display: none;
     }
 
-    /* 🎶 hint */
+    /* 🎶 music hint */
     #musicHint {
       position: fixed;
       bottom: 14px;
@@ -113,17 +115,17 @@
       font-size: 0.75rem;
       color: white;
       opacity: 0.7;
-      animation: pulse 2s infinite;
+      animation: hintPulse 2s infinite;
       z-index: 6;
     }
 
-    @keyframes pulse {
+    @keyframes hintPulse {
       0% { opacity: 0.35; }
       50% { opacity: 0.85; }
       100% { opacity: 0.35; }
     }
 
-    /* 💬 bubbles */
+    /* 💬 chat bubbles */
     .bubble {
       position: absolute;
       background: white;
@@ -141,7 +143,7 @@
       100% { opacity: 0; transform: translateY(-30px); }
     }
 
-    /* 💓 hearts */
+    /* 💓 floating hearts */
     .heart {
       position: absolute;
       bottom: -20px;
@@ -157,20 +159,12 @@
       }
     }
 
-    /* 👆 tap layer */
+    /* 👆 invisible tap layer */
     #tapLayer {
       position: fixed;
       inset: 0;
       z-index: 10;
       background: transparent;
-    }
-
-    /* 💌 lyric */
-    .lyric {
-      margin-top: 18px;
-      font-size: 0.9rem;
-      font-style: italic;
-      color: #ff6f91;
     }
   </style>
 </head>
@@ -202,12 +196,10 @@
 
   <div class="card hidden" id="loveMessage">
     <h1>YAYYY 😭💘</h1>
-
-    <p id="finalMessage"></p>
-
-    <p class="lyric">
-      “The angels up in the clouds are jealous knowin' we found<br>
-      somethin' so out of the ordinary”
+    <p>
+      Bubuuuuu, I love you so, so, so much ❤️<br><br>
+      You make me the happiest man in the world, and I’m endlessly grateful to have you as my girlfriend.<br><br>
+      I promise you a lifetime filled with love, care, happiness, and the warmest cuddles 💕
     </p>
   </div>
 
@@ -219,19 +211,13 @@
     const noBtn = document.getElementById("noBtn");
     const card = document.getElementById("card");
     const loveMessage = document.getElementById("loveMessage");
-    const finalMessage = document.getElementById("finalMessage");
     const waitText = document.getElementById("waitText");
 
     let glow = 12;
     let scale = 1;
     let attempts = 0;
 
-    finalMessage.innerHTML = `
-      Bubuuuuu, I love you so, so, so much ❤️<br><br>
-      You make me the happiest man in the world, and I’m endlessly grateful to have you as my girlfriend.<br><br>
-      I promise you a lifetime filled with love, care, happiness, and the warmest cuddles 💕
-    `;
-
+    /* 🎶 start music on first tap */
     tapLayer.addEventListener("click", () => {
       musicHint.style.display = "none";
       bgMusic.volume = 0;
@@ -257,8 +243,17 @@
     ];
 
     function teaseNo() {
-      noBtn.style.left = Math.random() * (window.innerWidth - 80) + "px";
-      noBtn.style.top = Math.random() * (window.innerHeight - 50) + "px";
+      const cardRect = card.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+
+      const maxX = cardRect.width - btnRect.width - 10;
+      const maxY = cardRect.height - btnRect.height - 10;
+
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
+
+      noBtn.style.left = `${x}px`;
+      noBtn.style.top = `${y}px`;
 
       glow += 6;
       scale += 0.04;
