@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Will you be My Valentine 💘</title>
+  <title>Be My Valentine 💘</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     body {
       height: 100vh;
@@ -11,57 +12,59 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(135deg, #ff758c, #ff7eb3);
+      background: linear-gradient(135deg, #ff8fab, #ff5d8f);
       font-family: 'Comic Sans MS', cursive, sans-serif;
       overflow: hidden;
     }
 
     .card {
       background: white;
-      padding: 30px;
-      border-radius: 25px;
+      padding: 32px 28px;
+      border-radius: 28px;
       text-align: center;
-      box-shadow: 0 15px 30px rgba(0,0,0,0.25);
-      max-width: 340px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      max-width: 360px;
       width: 90%;
       z-index: 2;
       animation: popIn 0.6s ease;
     }
 
     @keyframes popIn {
-      from { transform: scale(0.8); opacity: 0; }
+      from { transform: scale(0.85); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
     }
 
     h1 {
       color: #ff4d6d;
-      margin-bottom: 10px;
-      font-size: 1.8rem;
+      font-size: 1.9rem;
+      margin-bottom: 14px;
+      line-height: 1.25;
     }
 
     p {
       color: #555;
       font-size: 1rem;
-      line-height: 1.4;
+      margin-bottom: 18px;
     }
 
     button {
       font-size: 1rem;
-      padding: 12px 22px;
-      margin: 10px;
+      padding: 12px 24px;
+      margin: 8px;
       border: none;
-      border-radius: 12px;
+      border-radius: 14px;
       cursor: pointer;
       transition: all 0.3s ease;
     }
 
     #yesBtn {
-      background-color: #ff4d6d;
+      background: #ff4d6d;
       color: white;
+      box-shadow: 0 0 18px rgba(255, 77, 109, 0.55);
     }
 
     #noBtn {
-      background-color: #adb5bd;
+      background: #adb5bd;
       color: white;
       position: absolute;
     }
@@ -70,16 +73,35 @@
       display: none;
     }
 
-    /* Chat bubbles */
+    /* 🎶 music hint */
+    #musicHint {
+      position: fixed;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.75rem;
+      color: white;
+      opacity: 0.7;
+      animation: pulse 2s infinite;
+      z-index: 5;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.35; }
+      50% { opacity: 0.85; }
+      100% { opacity: 0.35; }
+    }
+
+    /* 💬 chat bubbles */
     .bubble {
       position: absolute;
       background: white;
-      padding: 10px 15px;
-      border-radius: 20px;
-      font-size: 0.9rem;
+      padding: 10px 14px;
+      border-radius: 18px;
+      font-size: 0.85rem;
       box-shadow: 0 5px 15px rgba(0,0,0,0.2);
       animation: fadeUp 2.5s ease forwards;
-      z-index: 3;
+      z-index: 4;
     }
 
     @keyframes fadeUp {
@@ -88,13 +110,13 @@
       100% { opacity: 0; transform: translateY(-30px); }
     }
 
-    /* Floating hearts */
+    /* 💓 floating hearts */
     .heart {
       position: absolute;
       bottom: -20px;
       font-size: 20px;
-      animation: floatUp linear forwards;
       opacity: 0.8;
+      animation: floatUp linear forwards;
     }
 
     @keyframes floatUp {
@@ -105,6 +127,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- 🎵 BACKGROUND MUSIC -->
@@ -112,44 +135,43 @@
     <source src="background.mp3" type="audio/mpeg">
   </audio>
 
-  <!-- QUESTION CARD -->
+  <!-- 🎶 hint -->
+  <div id="musicHint">🎶 tap anywhere</div>
+
+  <!-- 💖 QUESTION CARD -->
   <div class="card" id="card">
-    <h1 id="title"></h1>
-    <p>I promise love, laughs, and snacks 🥰</p>
+    <h1>
+      Will you be my<br>
+      Valentine, Bubuuuuu? 💖
+    </h1>
+    <p>I promise love, laughs, and unlimited snacks 🥰</p>
     <button id="yesBtn">Yes 💕</button>
     <button id="noBtn">No 🙄</button>
   </div>
 
-  <!-- FINAL MESSAGE -->
+  <!-- 💘 FINAL MESSAGE -->
   <div class="card hidden" id="loveMessage">
     <h1>YAYYY 😭💘</h1>
-    <p id="finalMessage"></p>
+    <p>
+      Bubuuuuu, you just made my heart very happy 🥰<br><br>
+      You are officially my Valentine 💕<br><br>
+      💓 endless affection<br>
+      😂 bad jokes<br>
+      🥰 way too much love
+    </p>
   </div>
 
   <script>
-    // 💖 CHANGE HER NAME HERE 💖
-    const herName = "Bubuuuuuu";
-
-    const title = document.getElementById("title");
-    const finalMessage = document.getElementById("finalMessage");
+    const bgMusic = document.getElementById("bgMusic");
+    const musicHint = document.getElementById("musicHint");
     const noBtn = document.getElementById("noBtn");
     const yesBtn = document.getElementById("yesBtn");
     const card = document.getElementById("card");
     const loveMessage = document.getElementById("loveMessage");
-    const bgMusic = document.getElementById("bgMusic");
 
-    title.textContent = `Will you be my Valentine, ${herName}? 💖`;
-
-    finalMessage.innerHTML = `
-      ${herName}, you just made my heart very happy 🥰<br><br>
-      Get ready for:<br>
-      💓 endless affection<br>
-      😂 bad jokes<br>
-      🥰 way too much love
-    `;
-
-    /* 🎶 Start music on first interaction */
+    /* 🎶 start music on first interaction */
     function startMusic() {
+      musicHint.style.display = "none";
       bgMusic.volume = 0;
       bgMusic.play();
 
@@ -170,7 +192,7 @@
     document.addEventListener("click", startMusic);
     document.addEventListener("touchstart", startMusic);
 
-    let yesScale = 1;
+    /* 😈 No button chaos */
     const bubbleMessages = [
       "are you sure?? 👀",
       "think carefully 😏",
@@ -180,19 +202,16 @@
     ];
 
     noBtn.addEventListener("mouseover", () => {
-      const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-      const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
-      noBtn.style.left = `${x}px`;
-      noBtn.style.top = `${y}px`;
+      noBtn.style.left = Math.random() * (window.innerWidth - 80) + "px";
+      noBtn.style.top = Math.random() * (window.innerHeight - 50) + "px";
 
-      yesScale += 0.12;
-      yesBtn.style.transform = `scale(${yesScale})`;
+      yesBtn.style.transform = "scale(1.15)";
 
       const bubble = document.createElement("div");
       bubble.className = "bubble";
       bubble.textContent = bubbleMessages[Math.floor(Math.random() * bubbleMessages.length)];
-      bubble.style.left = `${Math.random() * 70 + 10}%`;
-      bubble.style.top = `${Math.random() * 60 + 10}%`;
+      bubble.style.left = Math.random() * 70 + 10 + "%";
+      bubble.style.top = Math.random() * 60 + 10 + "%";
       document.body.appendChild(bubble);
 
       setTimeout(() => bubble.remove(), 2500);
@@ -203,6 +222,7 @@
       loveMessage.classList.remove("hidden");
     });
 
+    /* 💓 floating hearts */
     function createHeart() {
       const heart = document.createElement("div");
       heart.className = "heart";
@@ -213,7 +233,7 @@
       setTimeout(() => heart.remove(), 7000);
     }
 
-    setInterval(createHeart, 300);
+    setInterval(createHeart, 350);
   </script>
 
 </body>
