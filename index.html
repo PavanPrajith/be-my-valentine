@@ -140,13 +140,13 @@
 
 <body>
 
-  <!-- 🎵 Background Music -->
-  <audio id="bgMusic" loop>
+  <!-- 🎵 BACKGROUND MUSIC (iOS SAFE) -->
+  <audio id="bgMusic" loop playsinline>
     <source src="background.mp3" type="audio/mpeg">
   </audio>
 
   <!-- 🎶 hint -->
-  <div id="musicHint">🎶 tap anywhere</div>
+  <div id="musicHint">🎶 tap yes for music</div>
 
   <!-- 💖 QUESTION CARD -->
   <div class="card" id="card">
@@ -162,6 +162,7 @@
   <!-- 💘 FINAL MESSAGE -->
   <div class="card hidden" id="loveMessage">
     <h1>YAYYY 😭💘</h1>
+
     <p id="finalMessage"></p>
 
     <p class="lyric">
@@ -189,9 +190,11 @@
       always, in every moment, and in every version of us 💕
     `;
 
-    /* 🎶 start music on first interaction */
-    function startMusic() {
+    /* 🎶 START MUSIC ON YES (MOBILE SAFE) */
+    yesBtn.addEventListener("click", () => {
       musicHint.style.display = "none";
+
+      bgMusic.currentTime = 0;
       bgMusic.volume = 0;
       bgMusic.play();
 
@@ -205,12 +208,9 @@
         }
       }, 100);
 
-      document.removeEventListener("click", startMusic);
-      document.removeEventListener("touchstart", startMusic);
-    }
-
-    document.addEventListener("click", startMusic);
-    document.addEventListener("touchstart", startMusic);
+      card.classList.add("hidden");
+      loveMessage.classList.remove("hidden");
+    });
 
     /* 😈 No button chaos */
     const bubbleMessages = [
@@ -233,11 +233,6 @@
       document.body.appendChild(bubble);
 
       setTimeout(() => bubble.remove(), 2500);
-    });
-
-    yesBtn.addEventListener("click", () => {
-      card.classList.add("hidden");
-      loveMessage.classList.remove("hidden");
     });
 
     /* 💓 floating hearts */
