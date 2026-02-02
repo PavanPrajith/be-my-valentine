@@ -10,7 +10,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      background: linear-gradient(135deg, #ff758c, #ff7eb3);
       font-family: 'Comic Sans MS', cursive, sans-serif;
       overflow: hidden;
     }
@@ -18,24 +18,30 @@
     .card {
       background: white;
       padding: 40px;
-      border-radius: 20px;
+      border-radius: 25px;
       text-align: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+      max-width: 350px;
     }
 
     h1 {
       color: #ff4d6d;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
+    }
+
+    p {
+      color: #555;
+      font-size: 18px;
     }
 
     button {
       font-size: 18px;
-      padding: 10px 20px;
-      margin: 10px;
+      padding: 12px 25px;
+      margin: 15px;
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
     }
 
     #yesBtn {
@@ -58,13 +64,21 @@
 
   <div class="card" id="card">
     <h1>Will you be my Valentine? 💖</h1>
+    <p>I promise snacks, bad jokes, and unconditional affection 🥰</p>
     <button id="yesBtn">Yes 💕</button>
-    <button id="noBtn">No 🙈</button>
+    <button id="noBtn">No 🙄</button>
   </div>
 
   <div class="card hidden" id="loveMessage">
-    <h1>YAY!!! 💘💘💘</h1>
-    <p>You just made me the happiest person ever 🥰</p>
+    <h1>OMG YOU SAID YES 😭💘</h1>
+    <p>
+      Congratulations 🎉<br>
+      You are now officially my Valentine.<br><br>
+      Side effects may include:<br>
+      💖 butterflies<br>
+      😂 laughing too much<br>
+      🥰 excessive cuddles
+    </p>
   </div>
 
   <script>
@@ -73,11 +87,28 @@
     const card = document.getElementById("card");
     const loveMessage = document.getElementById("loveMessage");
 
+    let yesScale = 1;
+    const noMessages = [
+      "Nice try 😏",
+      "Absolutely not 😂",
+      "Wrong answer 😈",
+      "You’re still thinking??",
+      "Come onnn 🥺",
+      "This is getting embarrassing for you 😌"
+    ];
+
     noBtn.addEventListener("mouseover", () => {
       const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
       const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
       noBtn.style.left = `${x}px`;
       noBtn.style.top = `${y}px`;
+
+      // Change No button text
+      noBtn.textContent = noMessages[Math.floor(Math.random() * noMessages.length)];
+
+      // Make Yes button bigger
+      yesScale += 0.15;
+      yesBtn.style.transform = `scale(${yesScale})`;
     });
 
     yesBtn.addEventListener("click", () => {
