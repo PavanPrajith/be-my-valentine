@@ -22,9 +22,15 @@
       border-radius: 25px;
       text-align: center;
       box-shadow: 0 15px 30px rgba(0,0,0,0.25);
-      max-width: 320px;
+      max-width: 340px;
       width: 90%;
       z-index: 2;
+      animation: popIn 0.6s ease;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
 
     h1 {
@@ -36,6 +42,7 @@
     p {
       color: #555;
       font-size: 1rem;
+      line-height: 1.4;
     }
 
     button {
@@ -100,6 +107,7 @@
 </head>
 <body>
 
+  <!-- QUESTION CARD -->
   <div class="card" id="card">
     <h1 id="title"></h1>
     <p>I promise love, laughs, and snacks 🥰</p>
@@ -107,23 +115,30 @@
     <button id="noBtn">No 🙄</button>
   </div>
 
+  <!-- FINAL MESSAGE -->
   <div class="card hidden" id="loveMessage">
-    <h1>IT’S A YES 😭💘</h1>
-    <p>
-      Congratulations 💖<br>
-      You are officially my Valentine.<br><br>
-      Get ready for:<br>
-      💓 endless affection<br>
-      😂 bad jokes<br>
-      🥰 lots of love
-    </p>
+    <h1>YAYYY 😭💘</h1>
+    <p id="finalMessage"></p>
+
+    <p style="margin-top:15px;">This song reminds me of you 💕</p>
+
+    <!-- 🎵 Spotify Embed -->
+    <iframe
+      style="border-radius:12px; margin-top:10px"
+      src="https://open.spotify.com/embed/track/SPOTIFY_TRACK_ID"
+      width="100%"
+      height="80"
+      frameborder="0"
+      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+    </iframe>
   </div>
 
   <script>
-    // ✨ CHANGE HER NAME HERE ✨
-    const herName = "Bubuuuuuuu";
+    // 💖 CHANGE HER NAME HERE 💖
+    const herName = "HER_NAME_HERE";
 
     const title = document.getElementById("title");
+    const finalMessage = document.getElementById("finalMessage");
     const noBtn = document.getElementById("noBtn");
     const yesBtn = document.getElementById("yesBtn");
     const card = document.getElementById("card");
@@ -131,13 +146,22 @@
 
     title.textContent = `Will you be my Valentine, ${herName}? 💖`;
 
+    finalMessage.innerHTML = `
+      ${herName}, you just made my heart very happy 🥰<br><br>
+      You are officially my Valentine 💕<br><br>
+      Get ready for:<br>
+      💓 endless affection<br>
+      😂 bad jokes<br>
+      🥰 way too much love
+    `;
+
     let yesScale = 1;
     const bubbleMessages = [
       "are you sure?? 👀",
       "think carefully 😏",
-      "this is your last chance 😈",
+      "this feels like a yes 😌",
       "don’t break my heart 💔",
-      "you KNOW you want to 😌"
+      "you KNOW you want to 💕"
     ];
 
     noBtn.addEventListener("mouseover", () => {
@@ -146,11 +170,9 @@
       noBtn.style.left = `${x}px`;
       noBtn.style.top = `${y}px`;
 
-      // Yes button grows
       yesScale += 0.12;
       yesBtn.style.transform = `scale(${yesScale})`;
 
-      // Chat bubble
       const bubble = document.createElement("div");
       bubble.className = "bubble";
       bubble.textContent = bubbleMessages[Math.floor(Math.random() * bubbleMessages.length)];
@@ -166,7 +188,6 @@
       loveMessage.classList.remove("hidden");
     });
 
-    // Floating hearts
     function createHeart() {
       const heart = document.createElement("div");
       heart.className = "heart";
@@ -174,7 +195,6 @@
       heart.style.left = Math.random() * 100 + "vw";
       heart.style.animationDuration = Math.random() * 3 + 4 + "s";
       document.body.appendChild(heart);
-
       setTimeout(() => heart.remove(), 7000);
     }
 
