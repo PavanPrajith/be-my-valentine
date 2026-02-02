@@ -27,7 +27,6 @@
       width: 90%;
       z-index: 2;
       animation: popIn 0.6s ease;
-      position: relative;
     }
 
     @keyframes popIn {
@@ -45,25 +44,18 @@
     p {
       color: #555;
       font-size: 1rem;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
       line-height: 1.4;
-    }
-
-    .button-row {
-      display: flex;
-      justify-content: center;
-      gap: 14px;
-      margin-top: 10px;
-      position: relative;
     }
 
     button {
       font-size: 1rem;
       padding: 12px 24px;
+      margin: 8px;
       border: none;
       border-radius: 14px;
       cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.3s ease;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     #yesBtn {
@@ -71,6 +63,7 @@
       color: white;
       box-shadow: 0 0 var(--glow, 12px) rgba(255,77,109,0.7);
       transform: scale(var(--scale, 1));
+      z-index: 2;
     }
 
     #yesBtn.pulse {
@@ -86,6 +79,8 @@
     #noBtn {
       background: #adb5bd;
       color: white;
+      position: absolute;
+      z-index: 3;
     }
 
     #waitText {
@@ -100,9 +95,11 @@
       opacity: 1;
     }
 
-    .hidden { display: none; }
+    .hidden {
+      display: none;
+    }
 
-    /* 🎶 music hint */
+    /* 🎶 hint */
     #musicHint {
       position: fixed;
       bottom: 14px;
@@ -121,7 +118,25 @@
       100% { opacity: 0.35; }
     }
 
-    /* 💓 floating hearts */
+    /* 💬 chat bubbles */
+    .bubble {
+      position: absolute;
+      background: white;
+      padding: 10px 14px;
+      border-radius: 18px;
+      font-size: 0.85rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      animation: fadeUp 2.5s ease forwards;
+      z-index: 4;
+    }
+
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(10px); }
+      20% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-30px); }
+    }
+
+    /* 💓 hearts */
     .heart {
       position: absolute;
       bottom: -20px;
@@ -146,99 +161,121 @@
 
 <body>
 
-<audio id="bgMusic" loop playsinline>
-  <source src="background.mp3" type="audio/mpeg">
-</audio>
+  <audio id="bgMusic" loop playsinline>
+    <source src="background.mp3" type="audio/mpeg">
+  </audio>
 
-<div id="tapLayer"></div>
-<div id="musicHint">🎶 tap anywhere</div>
+  <div id="tapLayer"></div>
+  <div id="musicHint">🎶 tap anywhere</div>
 
-<div class="card" id="card">
-  <h1>Will you be my<br>Valentine, Bubuuuuu? 💖</h1>
-  <p>I promise love, laughs, and unlimited snacks 🥰</p>
+  <div class="card" id="card">
+    <h1>
+      Will you be my<br>
+      Valentine, Bubuuuuu? 💖
+    </h1>
+    <p>I promise love, laughs, and unlimited snacks 🥰</p>
 
-  <div class="button-row">
     <button id="yesBtn">Yes 💕</button>
     <button id="noBtn">No 🙄</button>
+
+    <div id="waitText">it’s okay… I’ll wait 🥺</div>
   </div>
 
-  <div id="waitText">it’s okay… I’ll wait 🥺</div>
-</div>
+  <div class="card hidden" id="loveMessage">
+    <h1>YAYYY 😭💘</h1>
+    <p>
+      Bubuuuuu, I love you so, so, so much ❤️<br><br>
+      You make me the happiest man in the world, and I’m endlessly grateful to have you as my girlfriend.<br><br>
+      I promise you a lifetime filled with love, care, happiness, and the warmest cuddles 💕
+    </p>
+  </div>
 
-<div class="card hidden" id="loveMessage">
-  <h1>YAYYY 😭💘</h1>
-  <p>
-    Bubuuuuu, I love you so, so, so much ❤️<br><br>
-    You make me the happiest man in the world, and I’m endlessly grateful to have you as my girlfriend.<br><br>
-    I promise you a lifetime filled with love, care, happiness, and the warmest cuddles 💕
-  </p>
-</div>
+  <script>
+    const bgMusic = document.getElementById("bgMusic");
+    const tapLayer = document.getElementById("tapLayer");
+    const musicHint = document.getElementById("musicHint");
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const card = document.getElementById("card");
+    const loveMessage = document.getElementById("loveMessage");
+    const waitText = document.getElementById("waitText");
 
-<script>
-  const bgMusic = document.getElementById("bgMusic");
-  const tapLayer = document.getElementById("tapLayer");
-  const musicHint = document.getElementById("musicHint");
-  const yesBtn = document.getElementById("yesBtn");
-  const noBtn = document.getElementById("noBtn");
-  const card = document.getElementById("card");
-  const waitText = document.getElementById("waitText");
-  const loveMessage = document.getElementById("loveMessage");
+    let glow = 12;
+    let scale = 1;
+    let attempts = 0;
 
-  let glow = 12, scale = 1, attempts = 0;
-  let offsetX = 0, offsetY = 0;
+    /* 🎶 start music on first tap */
+    tapLayer.addEventListener("click", () => {
+      musicHint.style.display = "none";
+      bgMusic.volume = 0;
+      bgMusic.play();
 
-  tapLayer.addEventListener("click", () => {
-    musicHint.style.display = "none";
-    bgMusic.volume = 0;
-    bgMusic.play();
-    let v = 0;
-    const fade = setInterval(() => {
-      if (v < 0.5) bgMusic.volume = (v += 0.02);
-      else clearInterval(fade);
-    }, 100);
-    tapLayer.remove();
-  });
+      let v = 0;
+      const fade = setInterval(() => {
+        if (v < 0.5) bgMusic.volume = (v += 0.02);
+        else clearInterval(fade);
+      }, 100);
 
-  function teaseNo() {
-    const maxX = 80;
-    const maxY = 30;
+      tapLayer.remove();
+    });
 
-    offsetX = (Math.random() * 2 - 1) * maxX;
-    offsetY = (Math.random() * 2 - 1) * maxY;
+    const bubbleMessages = [
+      "are you sure?? 👀",
+      "think carefully 😏",
+      "this feels like a yes 😌",
+      "don’t break my heart 💔",
+      "you KNOW you want to 💕"
+    ];
 
-    noBtn.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+    function teaseNo() {
+      const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+      const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
 
-    glow += 6;
-    scale += 0.04;
-    attempts++;
+      noBtn.style.left = `${x}px`;
+      noBtn.style.top = `${y}px`;
 
-    yesBtn.style.setProperty("--glow", glow + "px");
-    yesBtn.style.setProperty("--scale", scale);
+      glow += 6;
+      scale += 0.04;
+      attempts++;
 
-    if (attempts >= 3) {
-      yesBtn.classList.add("pulse");
-      waitText.classList.add("show");
+      yesBtn.style.setProperty("--glow", glow + "px");
+      yesBtn.style.setProperty("--scale", scale);
+
+      if (attempts >= 3) {
+        yesBtn.classList.add("pulse");
+        waitText.classList.add("show");
+      }
+
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+      bubble.textContent = bubbleMessages[Math.floor(Math.random() * bubbleMessages.length)];
+      bubble.style.left = Math.random() * 70 + 10 + "%";
+      bubble.style.top = Math.random() * 60 + 10 + "%";
+      document.body.appendChild(bubble);
+
+      setTimeout(() => bubble.remove(), 2500);
     }
-  }
 
-  noBtn.addEventListener("mouseover", teaseNo);
-  noBtn.addEventListener("touchstart", teaseNo);
+    noBtn.addEventListener("mouseover", teaseNo);
+    noBtn.addEventListener("touchstart", teaseNo);
 
-  yesBtn.addEventListener("click", () => {
-    card.classList.add("hidden");
-    loveMessage.classList.remove("hidden");
-  });
+    yesBtn.addEventListener("click", () => {
+      card.classList.add("hidden");
+      loveMessage.classList.remove("hidden");
+    });
 
-  setInterval(() => {
-    const h = document.createElement("div");
-    h.className = "heart";
-    h.textContent = "💓";
-    h.style.left = Math.random() * 100 + "vw";
-    h.style.animationDuration = Math.random() * 3 + 4 + "s";
-    document.body.appendChild(h);
-    setTimeout(() => h.remove(), 7000);
-  }, 350);
-</script>
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.textContent = "💓";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = Math.random() * 3 + 4 + "s";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 7000);
+    }
+
+    setInterval(createHeart, 350);
+  </script>
 
 </body>
 </html>
