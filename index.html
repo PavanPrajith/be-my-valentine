@@ -44,7 +44,8 @@
     p {
       color: #555;
       font-size: 1rem;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
+      line-height: 1.4;
     }
 
     button {
@@ -125,12 +126,21 @@
         opacity: 0;
       }
     }
+
+    /* 💌 lyric */
+    .lyric {
+      margin-top: 18px;
+      font-size: 0.9rem;
+      font-style: italic;
+      color: #ff6f91;
+      line-height: 1.4;
+    }
   </style>
 </head>
 
 <body>
 
-  <!-- 🎵 BACKGROUND MUSIC -->
+  <!-- 🎵 Background Music -->
   <audio id="bgMusic" loop>
     <source src="background.mp3" type="audio/mpeg">
   </audio>
@@ -152,12 +162,11 @@
   <!-- 💘 FINAL MESSAGE -->
   <div class="card hidden" id="loveMessage">
     <h1>YAYYY 😭💘</h1>
-    <p>
-      Bubuuuuu, you just made my heart very happy 🥰<br><br>
-      You are officially my Valentine 💕<br><br>
-      💓 endless affection<br>
-      😂 bad jokes<br>
-      🥰 way too much love
+    <p id="finalMessage"></p>
+
+    <p class="lyric">
+      “The angels up in the clouds are jealous knowin' we found<br>
+      somethin' so out of the ordinary”
     </p>
   </div>
 
@@ -168,6 +177,17 @@
     const yesBtn = document.getElementById("yesBtn");
     const card = document.getElementById("card");
     const loveMessage = document.getElementById("loveMessage");
+    const finalMessage = document.getElementById("finalMessage");
+
+    finalMessage.innerHTML = `
+      Bubuuuuu, I love you so, so, so much ❤️<br><br>
+
+      You make me the happiest man in the world, and I’m endlessly grateful to have you as my girlfriend.  
+      Every day with you feels like a gift, and my heart is at peace just knowing you’re mine.<br><br>
+
+      I promise you a lifetime filled with love, care, happiness, and the warmest cuddles —  
+      always, in every moment, and in every version of us 💕
+    `;
 
     /* 🎶 start music on first interaction */
     function startMusic() {
@@ -204,8 +224,6 @@
     noBtn.addEventListener("mouseover", () => {
       noBtn.style.left = Math.random() * (window.innerWidth - 80) + "px";
       noBtn.style.top = Math.random() * (window.innerHeight - 50) + "px";
-
-      yesBtn.style.transform = "scale(1.15)";
 
       const bubble = document.createElement("div");
       bubble.className = "bubble";
