@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Be My Valentine 💘</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       height: 100vh;
@@ -17,27 +18,30 @@
 
     .card {
       background: white;
-      padding: 40px;
+      padding: 30px;
       border-radius: 25px;
       text-align: center;
       box-shadow: 0 15px 30px rgba(0,0,0,0.25);
-      max-width: 350px;
+      max-width: 320px;
+      width: 90%;
+      z-index: 2;
     }
 
     h1 {
       color: #ff4d6d;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
+      font-size: 1.8rem;
     }
 
     p {
       color: #555;
-      font-size: 18px;
+      font-size: 1rem;
     }
 
     button {
-      font-size: 18px;
-      padding: 12px 25px;
-      margin: 15px;
+      font-size: 1rem;
+      padding: 12px 22px;
+      margin: 10px;
       border: none;
       border-radius: 12px;
       cursor: pointer;
@@ -58,43 +62,82 @@
     .hidden {
       display: none;
     }
+
+    /* Chat bubbles */
+    .bubble {
+      position: absolute;
+      background: white;
+      padding: 10px 15px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      animation: fadeUp 2.5s ease forwards;
+      z-index: 3;
+    }
+
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(10px); }
+      20% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-30px); }
+    }
+
+    /* Floating hearts */
+    .heart {
+      position: absolute;
+      bottom: -20px;
+      font-size: 20px;
+      animation: floatUp linear forwards;
+      opacity: 0.8;
+    }
+
+    @keyframes floatUp {
+      to {
+        transform: translateY(-110vh);
+        opacity: 0;
+      }
+    }
   </style>
 </head>
 <body>
 
   <div class="card" id="card">
-    <h1>Will you be my Valentine? 💖</h1>
-    <p>I promise snacks, bad jokes, and unconditional affection 🥰</p>
+    <h1 id="title"></h1>
+    <p>I promise love, laughs, and snacks 🥰</p>
     <button id="yesBtn">Yes 💕</button>
     <button id="noBtn">No 🙄</button>
   </div>
 
   <div class="card hidden" id="loveMessage">
-    <h1>OMG YOU SAID YES 😭💘</h1>
+    <h1>IT’S A YES 😭💘</h1>
     <p>
-      Congratulations 🎉<br>
-      You are now officially my Valentine.<br><br>
-      Side effects may include:<br>
-      💖 butterflies<br>
-      😂 laughing too much<br>
-      🥰 excessive cuddles
+      Congratulations 💖<br>
+      You are officially my Valentine.<br><br>
+      Get ready for:<br>
+      💓 endless affection<br>
+      😂 bad jokes<br>
+      🥰 lots of love
     </p>
   </div>
 
   <script>
+    // ✨ CHANGE HER NAME HERE ✨
+    const herName = "Sneha";
+
+    const title = document.getElementById("title");
     const noBtn = document.getElementById("noBtn");
     const yesBtn = document.getElementById("yesBtn");
     const card = document.getElementById("card");
     const loveMessage = document.getElementById("loveMessage");
 
+    title.textContent = `Will you be my Valentine, ${herName}? 💖`;
+
     let yesScale = 1;
-    const noMessages = [
-      "Nice try 😏",
-      "Absolutely not 😂",
-      "Wrong answer 😈",
-      "You’re still thinking??",
-      "Come onnn 🥺",
-      "This is getting embarrassing for you 😌"
+    const bubbleMessages = [
+      "are you sure?? 👀",
+      "think carefully 😏",
+      "this is your last chance 😈",
+      "don’t break my heart 💔",
+      "you KNOW you want to 😌"
     ];
 
     noBtn.addEventListener("mouseover", () => {
@@ -103,18 +146,39 @@
       noBtn.style.left = `${x}px`;
       noBtn.style.top = `${y}px`;
 
-      // Change No button text
-      noBtn.textContent = noMessages[Math.floor(Math.random() * noMessages.length)];
-
-      // Make Yes button bigger
-      yesScale += 0.15;
+      // Yes button grows
+      yesScale += 0.12;
       yesBtn.style.transform = `scale(${yesScale})`;
+
+      // Chat bubble
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+      bubble.textContent = bubbleMessages[Math.floor(Math.random() * bubbleMessages.length)];
+      bubble.style.left = `${Math.random() * 70 + 10}%`;
+      bubble.style.top = `${Math.random() * 60 + 10}%`;
+      document.body.appendChild(bubble);
+
+      setTimeout(() => bubble.remove(), 2500);
     });
 
     yesBtn.addEventListener("click", () => {
       card.classList.add("hidden");
       loveMessage.classList.remove("hidden");
     });
+
+    // Floating hearts
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.textContent = "💓";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = Math.random() * 3 + 4 + "s";
+      document.body.appendChild(heart);
+
+      setTimeout(() => heart.remove(), 7000);
+    }
+
+    setInterval(createHeart, 300);
   </script>
 
 </body>
